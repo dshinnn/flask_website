@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %} Register Phone Number {% endblock %}
+
+{% block content %}
+    <h1>Register Your Phone Number Here</h1>
+    <form action="" method="post">
+        <div class="form-group">
+            {{ form.csrf_token }}
+            <fieldset>
+                {{ form.name.label }}
+                {{ form.name }}
+            </fieldset>
+            <fieldset>
+                {{ form.phonenumber.label }}
+                {{ form.phonenumber }}
+            </fieldset>
+            <fieldset>
+                {{ form.email.label }}
+                {{ form.email }}
+            </fieldset>
+            <fieldset>
+                {{ form.address.label }}
+                {{ form.address }}
+            </fieldset>
+            {{ form.submit }}
+        </div>    
+    </form>
+    
+{% endblock %}
