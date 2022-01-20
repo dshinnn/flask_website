@@ -1,6 +1,6 @@
 import json
 from app import app
-from flask import render_template, url_for, redirect
+from flask import render_template, url_for, redirect, flash
 from flask_login import login_user, logout_user, login_required
 from app.form import PhonebookForm, RegisterForm, LoginForm
 from app.models import User, Phonebook
@@ -9,38 +9,28 @@ from app.models import User, Phonebook
 def index():
     return render_template('index.html')
 
-@app.route('/phonebook', methods=['GET', 'POST'])
-@login_required
-def phonebook():
-    form = PhonebookForm()
-    
-    if form.validate_on_submit():
-        name = form.name.data
-        phonenumber = form.phonenumber.data
-        email = form.email.data
-        address = form.address.data
-
-        Phonebook(name=name, phonenumber=phonenumber, email=email, address=address)
-        return redirect(url_for('index'))
-
-    return render_template('phonebook.html', form=form)
-
+# Registers new user
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
 
+    # Checks if user inputs are valid
     if form.validate_on_submit():
         username = form.username.data
         password = form.password.data
 
+        # Queries for inputted username 
         user = User.query.filter_by(username=username).first()
         
+        # Checks if the inputted username exists already, if not creates new user
         if not user:
             User(username=username, password=password)
-            return render_template('index.html')
+            flash(f'User { username } has successfully been created!', 'success')
+            return redirect(url_for('login'))
+
         else:
-            print('Username already exists')
-        return render_template('register.html')
+            flash(f'User { username } already exists', 'warning')
+        return redirect(url_for('register'))
         
     return render_template('register.html', form=form)
 
@@ -56,12 +46,12 @@ def login():
         # Checks if the username exists and if the password matches
         user = User.query.filter_by(username=username).first()
         if not user or not user.check_password(password):
-            print('Username does not exist')
+            flash(f'{ username } or password is invalid', 'danger')
             return redirect(url_for('login'))
 
         # If username exists and the password match, login user
         login_user(user)
-        print('Sucessfully logged in')
+        flash(f'Logged in as: { username }', 'secondary')
         return redirect(url_for('index'))
 
     return render_template('login.html', form=form)
@@ -69,5 +59,22 @@ def login():
 @app.route('/logout')
 def logout():
     logout_user()
-    print('Successfully logged out')
+    flash('You have been successfully logged out!', 'success')
     return redirect(url_for('index'))
+
+@app.route('/phonebook', methods=['GET', 'POST'])
+@login_required
+def phonebook():
+    form = PhonebookForm()
+    
+    if form.validate_on_submit():
+        name = form.name.data
+        phonenumber = form.phonenumber.data
+        email = form.email.data
+        address = form.address.data
+
+        Phonebook(name=name, phonenumber=phonenumber, email=email, address=address)
+        flash(f'{ name } has been successfully added to your contacts!', 'success')
+        return redirect(url_for('index'))
+
+    return render_template('phonebook.html', form=form)
