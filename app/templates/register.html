@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+    <h1 class="d-flex justify-content-center my-5">Register New Account</h1>
+        
+    <form action="" method="post" class="border border-success p-5 w-75 d-flex justify-content-between align-items-center col-8 offset-1">
+        {{ form.csrf_token }}
+            <div class="form-group col-4 offset-2">
+                <fieldset>
+                    {{ form.username.label }}
+                    {{ form.username(class='form-control', placeholder='Username') }}
+                </fieldset>
+            
+                <fieldset>
+                    {{ form.password.label }}
+                    {{ form.password(class='form-control', placeholder='Password') }}
+                </fieldset>
+                <fieldset>
+                    {{ form.confirm_pass.label }}
+                    {{ form.confirm_pass(class='form-control', placeholder='Confirm Password') }}
+                </fieldset>
+                {{ form.submit(class='mt-3') }} 
+            </div>
+            <img  class="w-25 m-5 col-3" src="https://www.ird.lk/wp-content/uploads/2019/02/register-icon.png" alt="">       
+    </form>
+{% endblock %}

@@ -1,8 +1,9 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    
-    <img class="d-block mt-5 mx-auto w-75 border border-dark rounded" src="https://images.news18.com/ibnlive/uploads/2022/01/bitcoin-16411059783x2.png?impolicy=website&width=510&height=356" alt="" >
-    <h1 class='text-center mt-5'>Daily Crypto Newsletters! Sign up now!</h1>
-    
+    {% if current_user.is_anonymous %}
+        <h1>Welcome to Phonebook, please login to see your contacts!</h1>
+    {% else %}
+        <h1>Welcome back, {{current_user.username }} </h1>
+    {% endif %}    
 {% endblock %}
