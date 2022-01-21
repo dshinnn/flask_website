@@ -15,7 +15,8 @@ class EditPhonebookForm(FlaskForm):
     phonenumber = StringField('Phone Number', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
     address = StringField('Address', validators=[DataRequired()])
-    submit = SubmitField('Add Contact')
+    user_id = StringField('User ID')
+    submit = SubmitField('Update Contact')
 
 class RegisterForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])

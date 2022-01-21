@@ -2,7 +2,7 @@ import json
 from app import app
 from flask import render_template, url_for, redirect, flash
 from flask_login import login_user, logout_user, login_required, current_user
-from app.form import PhonebookForm, RegisterForm, LoginForm
+from app.form import PhonebookForm, RegisterForm, LoginForm, EditPhonebookForm
 from app.models import User, Phonebook
 
 @app.route('/')
@@ -65,7 +65,6 @@ def logout():
     flash('You have been successfully logged out!', 'success')
     return redirect(url_for('index'))
 
-# -- Phonebook (Address Book) CRUD operations
 # CREATE
 @app.route('/phonebook', methods=['GET', 'POST'])
 @login_required
@@ -85,10 +84,24 @@ def phonebook():
 
     return render_template('phonebook.html', form=form)
 
+# Loads contact page when the "More Info" button is clicked
 @app.route('/phonebook/<int:contact_id>')
 def contact_info(contact_id):
     contact = Phonebook.query.get_or_404(contact_id)
     return render_template('contact.html', contact=contact)
 
-
-
+# UPDATE
+@app.route('/phonebook/<int:contact_id>/edit', methods=['GET', 'POST'])
+def edit(contact_id):
+    form = EditPhonebookForm()
+    form.user_id=current_user.id
+    contact = Phonebook.query.get_or_404(contact_id)
+    if form.validate_on_submit():
+        contact.name = form.name.data
+        contact.phonenumber = form.phonenumber.data
+        contact.email = form.email.data
+        contact.address = form.address.data
+        contact.save_contact()
+        flash(f"{contact.name} has been updated", "primary")
+        return redirect(url_for('contact_info', contact_id=contact.id))
+    return render_template('edit_phonebook.html', form=form, contact=contact)

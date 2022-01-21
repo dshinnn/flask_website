@@ -14,7 +14,7 @@
             Address: {{ contact.address }}
 
         </p>
-        <a href="#" class="btn btn-primary">Edit</a>
+        <a href="{{ url_for('edit', contact_id=contact.id) }}" class="btn btn-primary">Edit</a>
         </div>
     </div>
 {% endblock %}
