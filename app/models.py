@@ -23,6 +23,13 @@ class User(db.Model, UserMixin):
 
     def check_password(self, password):
         return check_password_hash(self.password, password)
+    
+    def save_user(self):
+        db.session.commit()
+    
+    def delete_user(self):
+        db.session.delete(self)
+        db.session.commit()
 
 class Phonebook(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -39,3 +46,10 @@ class Phonebook(db.Model):
 
     def __repr__(self):
         return f'<User|{self.name}, {self.phonenumber}, {self.email}, {self.address}>'
+
+    def save_contact(self):
+        db.session.commit()
+    
+    def delete_contact(self):
+        db.session.delete(self)
+        db.session.commit()

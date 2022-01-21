@@ -1,7 +1,7 @@
 import json
 from app import app
 from flask import render_template, url_for, redirect, flash
-from flask_login import login_user, logout_user, login_required
+from flask_login import login_user, logout_user, login_required, current_user
 from app.form import PhonebookForm, RegisterForm, LoginForm
 from app.models import User, Phonebook
 
@@ -34,6 +34,7 @@ def register():
         
     return render_template('register.html', form=form)
 
+# Logs in user
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
@@ -56,25 +57,31 @@ def login():
 
     return render_template('login.html', form=form)
 
+# Logs out user
 @app.route('/logout')
 def logout():
     logout_user()
     flash('You have been successfully logged out!', 'success')
     return redirect(url_for('index'))
 
-@app.route('/phonebook', methods=['GET', 'POST'])
+# -- Phonebook (Address Book) CRUD operations
+# CREATE
+@app.route('/phonebook/', methods=['GET', 'POST'])
 @login_required
 def phonebook():
     form = PhonebookForm()
-    
+
     if form.validate_on_submit():
         name = form.name.data
         phonenumber = form.phonenumber.data
         email = form.email.data
         address = form.address.data
 
-        Phonebook(name=name, phonenumber=phonenumber, email=email, address=address)
+        Phonebook(name=name, phonenumber=phonenumber, email=email, address=address, user_id=current_user.id)
+        
         flash(f'{ name } has been successfully added to your contacts!', 'success')
         return redirect(url_for('index'))
 
     return render_template('phonebook.html', form=form)
+
+# UPDATE
