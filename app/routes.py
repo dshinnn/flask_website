@@ -7,7 +7,8 @@ from app.models import User, Phonebook
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    phonebook = Phonebook.query.all()
+    return render_template('index.html', phonebook=phonebook)
 
 # Registers new user
 @app.route('/register', methods=['GET', 'POST'])
@@ -66,7 +67,7 @@ def logout():
 
 # -- Phonebook (Address Book) CRUD operations
 # CREATE
-@app.route('/phonebook/', methods=['GET', 'POST'])
+@app.route('/phonebook', methods=['GET', 'POST'])
 @login_required
 def phonebook():
     form = PhonebookForm()
@@ -77,11 +78,17 @@ def phonebook():
         email = form.email.data
         address = form.address.data
 
-        Phonebook(name=name, phonenumber=phonenumber, email=email, address=address, user_id=current_user.id)
+        phonebook = Phonebook(name=name, phonenumber=phonenumber, email=email, address=address, user_id=current_user.id)
         
         flash(f'{ name } has been successfully added to your contacts!', 'success')
-        return redirect(url_for('index'))
+        return redirect(url_for('index'), phonebook=phonebook)
 
     return render_template('phonebook.html', form=form)
 
-# UPDATE
+@app.route('/phonebook/<int:contact_id>')
+def contact_info(contact_id):
+    contact = Phonebook.query.get_or_404(contact_id)
+    return render_template('contact.html', contact=contact)
+
+
+

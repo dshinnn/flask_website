@@ -4,7 +4,18 @@
     {% if current_user.is_anonymous %}
         <h1>Welcome to Phonebook, please login to see your contacts!</h1>
     {% else %}
-        <h1>Welcome back, {{current_user.username }} </h1>
+        <h1>Welcome back, {{ current_user.username }} </h1>
+        {% for contact in phonebook %}
+            {% if contact.user_id == current_user.id %}
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ contact.name }}</h5>
+                        <p class="card-text">Phone Number: {{ contact.phonenumber }}</p>
+                        <a href="{{ url_for('contact_info', contact_id=contact.id) }}" class="btn btn-primary">More Info</a>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
     {% endif %} 
     
     

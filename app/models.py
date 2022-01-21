@@ -45,7 +45,7 @@ class Phonebook(db.Model):
         db.session.commit()
 
     def __repr__(self):
-        return f'<User|{self.name}, {self.phonenumber}, {self.email}, {self.address}>'
+        return f'<Phonebook|{self.name}, {self.phonenumber}, {self.email}, {self.address}>'
 
     def save_contact(self):
         db.session.commit()
