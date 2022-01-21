@@ -5,16 +5,40 @@
 {% block content %}
     <div class="card">
         <div class="card-body">
-        <h5 class="card-title text-center">{{ contact.name }}</h5>
-        <p class="card-text text-center">
-            Phone Number: {{ contact.phonenumber }}
-            <br>
-            Email: {{ contact.email }}
-            <br>
-            Address: {{ contact.address }}
+            <h5 class="card-title text-center">{{ contact.name }}</h5>
+            <p class="card-text text-center">
+                Phone Number: {{ contact.phonenumber }}
+                <br>
+                Email: {{ contact.email }}
+                <br>
+                Address: {{ contact.address }}
 
-        </p>
-        <a href="{{ url_for('edit', contact_id=contact.id) }}" class="btn btn-primary">Edit</a>
+            </p>
+            <a href="{{ url_for('edit_contact', contact_id=contact.id) }}" class="btn btn-primary">Edit</a>
+            
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                Delete
+            </button>
+            
+            <!-- Modal -->
+            <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Delete {{ contact.name }}?</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        You are about to delete <strong>{{ contact.name }}</strong> and this <strong>CANNOT</strong> be reversed. Would you like to continue?
+                    </div>
+                    <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                    <a href="{{ url_for('delete_contact', contact_id=contact.id) }}"><button type="button" class="btn btn-primary">Yes</button></a>
+                    </div>
+                </div>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}

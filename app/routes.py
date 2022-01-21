@@ -77,22 +77,24 @@ def phonebook():
         email = form.email.data
         address = form.address.data
 
-        phonebook = Phonebook(name=name, phonenumber=phonenumber, email=email, address=address, user_id=current_user.id)
+        Phonebook(name=name, phonenumber=phonenumber, email=email, address=address, user_id=current_user.id)
         
         flash(f'{ name } has been successfully added to your contacts!', 'success')
-        return redirect(url_for('index'), phonebook=phonebook)
+        return redirect(url_for('index'))
 
     return render_template('phonebook.html', form=form)
 
 # Loads contact page when the "More Info" button is clicked
 @app.route('/phonebook/<int:contact_id>')
+@login_required
 def contact_info(contact_id):
     contact = Phonebook.query.get_or_404(contact_id)
     return render_template('contact.html', contact=contact)
 
 # UPDATE
 @app.route('/phonebook/<int:contact_id>/edit', methods=['GET', 'POST'])
-def edit(contact_id):
+@login_required
+def edit_contact(contact_id):
     form = EditPhonebookForm()
     form.user_id=current_user.id
     contact = Phonebook.query.get_or_404(contact_id)
@@ -105,3 +107,12 @@ def edit(contact_id):
         flash(f"{contact.name} has been updated", "primary")
         return redirect(url_for('contact_info', contact_id=contact.id))
     return render_template('edit_phonebook.html', form=form, contact=contact)
+
+# Delete
+@app.route('/phonenumber/<int:contact_id>/delete', methods=['GET', 'POST'])
+@login_required
+def delete_contact(contact_id):
+    contact = Phonebook.query.get_or_404(contact_id)
+    flash(f'{ contact.name } has been successfully deleted', 'secondary')
+    contact.delete_contact()
+    return redirect(url_for('index'))
